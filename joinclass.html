@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joinclass</title>
+    <link rel="stylesheet" href="joinclass.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Enter your four-digit code:</h1>
+        <div class="input-container">
+            <input type="text" id="numberInput" class="input-field" placeholder="Type code ">
+        </div>
+        <div class="button button-5">Enter class</div>
+    </div>
+
+    <script>
+        
+        function validateNumber() {
+            var input = document.getElementById("numberInput").value;
+            var regex = /^\d{4}$/; // Regular expression to match exactly four digits
+            if (regex.test(input)) {
+                alert("Valid input!");
+            } else {
+                alert("Please enter exactly four digits.");
+            }
+        }
+    </script>
+</body>
+</html>

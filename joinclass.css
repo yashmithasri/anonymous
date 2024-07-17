@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:900');
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: black;
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    text-align: center;
+    color: white;
+}
+
+.input-field {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 70%;
+    margin: 20px auto;
+}
+.button-5 {
+    width: 50%;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 20px auto;
+    background-color: #7ABA78;
+    background-image: -moz-linear-gradient(top, #fff 0%, #7ABA78 100%); 
+    background-image: -webkit-linear-gradient(top, #fff 0%, #7ABA78 100%); 
+    background-image: linear-gradient(to bottom, #fff 0%, #7ABA78 100%); 
+    background-size: 300px;
+    background-repeat: no-repeat;
+    background-position: 0%;
+    -webkit-transition: background 300ms ease-in-out;
+    transition: background 300ms ease-in-out;
+    color: rgb(0, 0, 0); /* Changing the text color to pink */
+}
+.button-5:hover {
+    background-position: -2000%;
+    transition: background 300ms ease-in-out;
+}

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Belanosima&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>Generate Code</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 210px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+        .container {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .form-check {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        .form-check input[type="radio"] {
+            margin-right: 10px;
+        }
+        .form-check-label {
+            width: 50px; /* Adjust width to align labels in a straight line */
+            text-align: left; /* Ensure labels are aligned to the left */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Choose capacity:</h2>
+        <form id="capacityForm">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="capacity30" name="capacity" value="30">
+                <label class="form-check-label" for="capacity30">30</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="capacity60" name="capacity" value="60">
+                <label class="form-check-label" for="capacity60">60</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="capacity100" name="capacity" value="100">
+                <label class="form-check-label" for="capacity100">100</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="capacity100plus" name="capacity" value="100+">
+                <label class="form-check-label" for="capacity100plus">100+</label>
+            </div>
+            <button type="button" class="btn btn-info mt-3" onclick="generateCode()">Generate Code</button>
+        </form>
+        <div class="mt-3">
+            <p id="codeDisplay"></p>
+        </div>
+        <div id="studentSection" style="display: none;">
+            <h3>Join a class</h3>
+            <input type="text" id="classCode" placeholder="Enter class code" />
+            <button type="button" onclick="joinClass()">Join</button>
+            <div id="questionSection" style="display: none;">
+                <h3>Ask a question</h3>
+                <input type="text" id="questionInput" placeholder="Type your question" />
+                <button type="button" onclick="askQuestion()">Ask</button>
+                <h3>Questions</h3>
+                <ul id="questionsList"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        function generateCode() {
+            const selectedCapacity = document.querySelector('input[name="capacity"]:checked');
+            
+            if (selectedCapacity) {
+                const randomCode = Math.floor(1000 + Math.random() * 9000);
+                document.getElementById('codeDisplay').innerText = 'Share your class code: ' + randomCode;
+            } else {
+                alert('Please select a capacity option.');
+            }
+        }
+        window.addEventListener('load', () => {
+        const socket = io();
+        const studentSection = document.getElementById('studentSection');
+        const questionSection = document.getElementById('questionSection');
+        const questionsList = document.getElementById('questionsList');
+        
+        function generateCode() {
+            const selectedCapacity = document.querySelector('input[name="capacity"]:checked');
+            
+            if (selectedCapacity) {
+                const randomCode = Math.floor(1000 + Math.random() * 9000);
+                document.getElementById('codeDisplay').innerText = 'Share your class code: ' + randomCode;
+                socket.emit('create class', randomCode);
+            } else {
+                alert('Please select a capacity option.');
+            }
+        }
+
+        function joinClass() {
+            const classCode = document.getElementById('classCode').value;
+            if (classCode) {
+                socket.emit('join class', classCode);
+            } else {
+                alert('Please enter a class code.');
+            }
+        }
+
+        function askQuestion() {
+            const questionInput = document.getElementById('questionInput').value;
+            const classCode = document.getElementById('classCode').value;
+            if (questionInput) {
+                socket.emit('ask question', { question: questionInput, code: classCode });
+                document.getElementById('questionInput').value = '';
+            } else {
+                alert('Please enter a question.');
+            }
+        }
+
+        socket.on('joined', (code) => {
+            studentSection.style.display = 'none';
+            questionSection.style.display = 'block';
+            alert('Joined class ' + code);
+        });
+
+        socket.on('new question', (data) => {
+            const li = document.createElement('li');
+            li.innerText = data.question;
+            questionsList.appendChild(li);
+        });
+
+        socket.on('error', (message) => {
+            alert(message);
+        });
+
+        socket.on('class created', (code) => {
+            alert('Class created with code: ' + code);
+        });
+    });
+    </script>
+</body>
+</html>
